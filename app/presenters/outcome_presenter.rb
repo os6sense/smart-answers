@@ -25,7 +25,28 @@ class OutcomePresenter < NodePresenter
     calendar.present?
   end
 
+  def has_body?
+    use_template? || super()
+  end
+
+  def body
+    if use_template?
+      erb_template_path = Rails.root.join("lib/smart_answer_flows/#{@node.flow_name}/#{name}.txt.erb")
+      template = File.read(erb_template_path)
+      view_context = @state.dup
+      view_context.extend(ActionView::Helpers::NumberHelper)
+      govspeak = ERB.new(template).result(view_context.instance_eval { binding })
+      GovspeakPresenter.new(govspeak).html
+    else
+      super()
+    end
+  end
+
   private
+
+  def use_template?
+    @node.use_template?
+  end
 
   def render_data_partial(partial, variable_name)
     data = @state.send(variable_name.to_sym)
