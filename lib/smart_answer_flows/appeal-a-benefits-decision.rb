@@ -58,8 +58,8 @@ multiple_choice :had_written_explanation? do
     if response == 'written_explanation'
       :when_did_you_ask_for_it?
     else
-      a_month_has_passed = (Date.parse(decision_letter_received_on_string) < 1.month.ago.to_date)
-      if a_month_has_passed
+      decision_letter_received_more_than_a_month_ago = (Date.parse(decision_letter_received_on_string) < 1.month.ago.to_date)
+      if decision_letter_received_more_than_a_month_ago
         :special_circumstances?
       else
         if response == 'spoken_explanation'
