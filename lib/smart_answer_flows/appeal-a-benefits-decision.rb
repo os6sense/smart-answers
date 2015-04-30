@@ -89,8 +89,6 @@ end
 
 # Q6
 date_question :when_did_you_get_it? do
-
-  save_input_as :written_explanation_received_date
   from { 5.years.ago }
   to { Date.today }
 
