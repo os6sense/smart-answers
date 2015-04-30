@@ -76,9 +76,14 @@ end
 date_question :when_did_you_ask_for_it? do
   from { 5.years.ago }
   to { Date.today }
-  calculate :written_statement_requested_on_string do |response|
-    Date.parse(response).strftime("%e %B %Y")
+
+  calculate :written_statement_requested_on do |response|
+    Date.parse(response)
   end
+  calculate :written_statement_requested_on_string do
+    written_statement_requested_on.strftime("%e %B %Y")
+  end
+
   next_node :when_did_you_get_it?
 end
 
@@ -92,7 +97,7 @@ date_question :when_did_you_get_it? do
   calculate :appeal_expiry_date do |response|
     decision_letter_received_on = Date.parse(decision_letter_received_on_string)
     received_date = Date.parse(response)
-    request_date = Date.parse(written_statement_requested_on_string)
+    request_date = written_statement_requested_on
     raise InvalidResponse if received_date < request_date
     received_within_a_month = received_date < 1.month.since(request_date)
 
@@ -116,7 +121,7 @@ date_question :when_did_you_get_it? do
 
   next_node do |response|
     received_date = Date.parse(response)
-    received_within_a_month = received_date < 1.month.since(Date.parse(written_statement_requested_on_string))
+    received_within_a_month = received_date < 1.month.since(written_statement_requested_on)
     a_fortnight_has_passed = Date.today > 1.fortnight.since(received_date)
     decision_letter_received_on = Date.parse(decision_letter_received_on_string)
     a_month_and_a_fortnight_since_decision = Date.today > 1.fortnight.since(1.month.since(decision_letter_received_on))
