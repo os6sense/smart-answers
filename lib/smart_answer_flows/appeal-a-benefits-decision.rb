@@ -20,7 +20,7 @@ end
 date_question :date_of_decision_letter? do
   from { 5.years.ago }
   to { Date.today }
-  save_input_as :decision_letter_date
+  save_input_as :decision_letter_received_on_string
 
   next_node do |response|
     decision_date = Date.parse(response)
@@ -40,7 +40,7 @@ multiple_choice :had_written_explanation? do
   option :no
 
   calculate :appeal_expiry_date do
-    decision_date = Date.parse(decision_letter_date)
+    decision_date = Date.parse(decision_letter_received_on_string)
     if (decision_date > 1.month.ago.to_date)
       1.month.since(decision_date)
     end
@@ -58,7 +58,7 @@ multiple_choice :had_written_explanation? do
     if response == 'written_explanation'
       :when_did_you_ask_for_it?
     else
-      a_month_has_passed = (Date.parse(decision_letter_date) < 1.month.ago.to_date)
+      a_month_has_passed = (Date.parse(decision_letter_received_on_string) < 1.month.ago.to_date)
       if a_month_has_passed
         :special_circumstances?
       else
@@ -90,7 +90,7 @@ date_question :when_did_you_get_it? do
   to { Date.today }
 
   calculate :appeal_expiry_date do |response|
-    decision_date = Date.parse(decision_letter_date)
+    decision_date = Date.parse(decision_letter_received_on_string)
     received_date = Date.parse(response)
     request_date = Date.parse(written_explanation_request_date)
     raise InvalidResponse if received_date < request_date
@@ -118,7 +118,7 @@ date_question :when_did_you_get_it? do
     received_date = Date.parse(response)
     received_within_a_month = received_date < 1.month.since(Date.parse(written_explanation_request_date))
     a_fortnight_has_passed = Date.today > 1.fortnight.since(received_date)
-    decision_date = Date.parse(decision_letter_date)
+    decision_date = Date.parse(decision_letter_received_on_string)
     a_month_and_a_fortnight_since_decision = Date.today > 1.fortnight.since(1.month.since(decision_date))
 
     if (!received_within_a_month and a_fortnight_has_passed) or
