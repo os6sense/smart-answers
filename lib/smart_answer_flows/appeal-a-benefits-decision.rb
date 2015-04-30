@@ -119,11 +119,11 @@ date_question :when_did_you_get_it? do
   next_node do |response|
     written_statement_received_on = Date.parse(response)
     written_statement_received_within_a_month_of_being_requested = written_statement_received_on < 1.month.since(written_statement_requested_on)
-    a_fortnight_has_passed = Date.today > 1.fortnight.since(written_statement_received_on)
+    written_statement_received_over_a_fortnight_ago = Date.today > 1.fortnight.since(written_statement_received_on)
     decision_letter_received_on = Date.parse(decision_letter_received_on_string)
     a_month_and_a_fortnight_since_decision = Date.today > 1.fortnight.since(1.month.since(decision_letter_received_on))
 
-    if (!written_statement_received_within_a_month_of_being_requested and a_fortnight_has_passed) or
+    if (!written_statement_received_within_a_month_of_being_requested and written_statement_received_over_a_fortnight_ago) or
       (written_statement_received_within_a_month_of_being_requested and a_month_and_a_fortnight_since_decision)
       :special_circumstances?
     else
