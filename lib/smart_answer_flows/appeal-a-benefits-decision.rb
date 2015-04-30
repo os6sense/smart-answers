@@ -46,14 +46,6 @@ multiple_choice :had_written_explanation? do
     end
   end
 
-  calculate :appeal_expiry_text do
-    if appeal_expiry_date
-      "You have until #{appeal_expiry_date.to_s(:long)} to start an appeal."
-    else
-      ""
-    end
-  end
-
   next_node do |response|
     if response == 'written_explanation'
       :when_did_you_ask_for_it?
@@ -108,14 +100,6 @@ date_question :when_did_you_get_it? do
     end
   end
 
-  calculate :appeal_expiry_text do
-    if appeal_expiry_date
-      "You have until #{appeal_expiry_date.to_s(:long)} to start an appeal"
-    else
-      ""
-    end
-  end
-
   next_node do |response|
     written_statement_received_on = Date.parse(response)
     written_statement_received_within_a_month_of_being_requested = written_statement_received_on < 1.month.since(written_statement_requested_on)
@@ -142,6 +126,14 @@ end
 multiple_choice :asked_to_reconsider? do
   option yes: :kind_of_benefit_or_credit?
   option no: :ask_to_reconsider
+
+  precalculate :appeal_expiry_text do
+    if appeal_expiry_date
+      "You have until #{appeal_expiry_date.to_s(:long)} to start an appeal."
+    else
+      ""
+    end
+  end
 end
 
 # Q9
