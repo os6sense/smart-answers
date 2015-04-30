@@ -94,14 +94,14 @@ date_question :when_did_you_get_it? do
 
   calculate :appeal_expiry_date do |response|
     decision_letter_received_on = Date.parse(decision_letter_received_on_string)
-    received_date = Date.parse(response)
-    raise InvalidResponse if received_date < written_statement_requested_on
-    received_within_a_month = received_date < 1.month.since(written_statement_requested_on)
+    written_statement_received_on = Date.parse(response)
+    raise InvalidResponse if written_statement_received_on < written_statement_requested_on
+    received_within_a_month = written_statement_received_on < 1.month.since(written_statement_requested_on)
 
     if received_within_a_month
       expiry_date = 1.fortnight.since(1.month.since(decision_letter_received_on))
     else
-      expiry_date = 1.fortnight.since(received_date)
+      expiry_date = 1.fortnight.since(written_statement_received_on)
     end
     if Date.today < expiry_date
       expiry_date
@@ -117,9 +117,9 @@ date_question :when_did_you_get_it? do
   end
 
   next_node do |response|
-    received_date = Date.parse(response)
-    received_within_a_month = received_date < 1.month.since(written_statement_requested_on)
-    a_fortnight_has_passed = Date.today > 1.fortnight.since(received_date)
+    written_statement_received_on = Date.parse(response)
+    received_within_a_month = written_statement_received_on < 1.month.since(written_statement_requested_on)
+    a_fortnight_has_passed = Date.today > 1.fortnight.since(written_statement_received_on)
     decision_letter_received_on = Date.parse(decision_letter_received_on_string)
     a_month_and_a_fortnight_since_decision = Date.today > 1.fortnight.since(1.month.since(decision_letter_received_on))
 
