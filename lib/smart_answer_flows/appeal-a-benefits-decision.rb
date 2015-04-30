@@ -95,9 +95,8 @@ date_question :when_did_you_get_it? do
   calculate :appeal_expiry_date do |response|
     decision_letter_received_on = Date.parse(decision_letter_received_on_string)
     received_date = Date.parse(response)
-    request_date = written_statement_requested_on
-    raise InvalidResponse if received_date < request_date
-    received_within_a_month = received_date < 1.month.since(request_date)
+    raise InvalidResponse if received_date < written_statement_requested_on
+    received_within_a_month = received_date < 1.month.since(written_statement_requested_on)
 
     if received_within_a_month
       expiry_date = 1.fortnight.since(1.month.since(decision_letter_received_on))
