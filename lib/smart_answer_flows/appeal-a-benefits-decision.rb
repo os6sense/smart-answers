@@ -121,10 +121,10 @@ date_question :when_did_you_get_it? do
     written_statement_received_within_a_month_of_being_requested = written_statement_received_on < 1.month.since(written_statement_requested_on)
     written_statement_received_over_a_fortnight_ago = Date.today > 1.fortnight.since(written_statement_received_on)
     decision_letter_received_on = Date.parse(decision_letter_received_on_string)
-    a_month_and_a_fortnight_since_decision = Date.today > 1.fortnight.since(1.month.since(decision_letter_received_on))
+    decision_letter_received_more_than_one_month_and_a_fortnight_ago = Date.today > 1.fortnight.since(1.month.since(decision_letter_received_on))
 
     if (!written_statement_received_within_a_month_of_being_requested and written_statement_received_over_a_fortnight_ago) or
-      (written_statement_received_within_a_month_of_being_requested and a_month_and_a_fortnight_since_decision)
+      (written_statement_received_within_a_month_of_being_requested and decision_letter_received_more_than_one_month_and_a_fortnight_ago)
       :special_circumstances?
     else
       :asked_to_reconsider?
