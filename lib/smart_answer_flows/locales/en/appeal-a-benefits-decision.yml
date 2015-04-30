@@ -77,7 +77,7 @@ en-GB:
           * when you asked for the written statement
           * when the benefits office sent it to you
 
-        error_message: Please enter a date on or after %{written_explanation_request_date}
+        error_message: Please enter a date on or after %{written_statement_requested_on_string}
       # Q7
       special_circumstances?:
         title: "Did something happen to stop you appealing when you first got the decision?"
