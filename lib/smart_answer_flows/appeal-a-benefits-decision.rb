@@ -23,8 +23,8 @@ date_question :date_of_decision_letter? do
   save_input_as :decision_letter_received_on_string
 
   next_node do |response|
-    decision_date = Date.parse(response)
-    appeal_expiry_date = decision_appeal_limit_in_months.months.since(decision_date)
+    decision_letter_received_on = Date.parse(response)
+    appeal_expiry_date = decision_appeal_limit_in_months.months.since(decision_letter_received_on)
     if Date.today < appeal_expiry_date
       :had_written_explanation?
     else
@@ -40,9 +40,9 @@ multiple_choice :had_written_explanation? do
   option :no
 
   calculate :appeal_expiry_date do
-    decision_date = Date.parse(decision_letter_received_on_string)
-    if (decision_date > 1.month.ago.to_date)
-      1.month.since(decision_date)
+    decision_letter_received_on = Date.parse(decision_letter_received_on_string)
+    if (decision_letter_received_on > 1.month.ago.to_date)
+      1.month.since(decision_letter_received_on)
     end
   end
 
@@ -90,14 +90,14 @@ date_question :when_did_you_get_it? do
   to { Date.today }
 
   calculate :appeal_expiry_date do |response|
-    decision_date = Date.parse(decision_letter_received_on_string)
+    decision_letter_received_on = Date.parse(decision_letter_received_on_string)
     received_date = Date.parse(response)
     request_date = Date.parse(written_explanation_request_date)
     raise InvalidResponse if received_date < request_date
     received_within_a_month = received_date < 1.month.since(request_date)
 
     if received_within_a_month
-      expiry_date = 1.fortnight.since(1.month.since(decision_date))
+      expiry_date = 1.fortnight.since(1.month.since(decision_letter_received_on))
     else
       expiry_date = 1.fortnight.since(received_date)
     end
@@ -118,8 +118,8 @@ date_question :when_did_you_get_it? do
     received_date = Date.parse(response)
     received_within_a_month = received_date < 1.month.since(Date.parse(written_explanation_request_date))
     a_fortnight_has_passed = Date.today > 1.fortnight.since(received_date)
-    decision_date = Date.parse(decision_letter_received_on_string)
-    a_month_and_a_fortnight_since_decision = Date.today > 1.fortnight.since(1.month.since(decision_date))
+    decision_letter_received_on = Date.parse(decision_letter_received_on_string)
+    a_month_and_a_fortnight_since_decision = Date.today > 1.fortnight.since(1.month.since(decision_letter_received_on))
 
     if (!received_within_a_month and a_fortnight_has_passed) or
       (received_within_a_month and a_month_and_a_fortnight_since_decision)
