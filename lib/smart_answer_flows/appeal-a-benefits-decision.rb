@@ -99,12 +99,12 @@ date_question :when_did_you_get_it? do
     written_statement_received_within_a_month_of_being_requested = written_statement_received_on < 1.month.since(written_statement_requested_on)
 
     if written_statement_received_within_a_month_of_being_requested
-      expiry_date = 1.fortnight.since(1.month.since(decision_letter_received_on))
+      appeal_expiry_date = 1.fortnight.since(1.month.since(decision_letter_received_on))
     else
-      expiry_date = 1.fortnight.since(written_statement_received_on)
+      appeal_expiry_date = 1.fortnight.since(written_statement_received_on)
     end
-    if Date.today < expiry_date
-      expiry_date
+    if Date.today < appeal_expiry_date
+      appeal_expiry_date
     end
   end
 
