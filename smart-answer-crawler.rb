@@ -9,7 +9,11 @@ BASE_URL     = "https://www.gov.uk/#{SMART_ANSWER}/"
 tier_4_visa_data = YAML.load(File.read('lib/data/apply_tier_4_visa_data.yml'))
 
 RESPONSES = {
-  "What is your Tier 4 sponsor number?" => tier_4_visa_data['post'].keys + tier_4_visa_data['online'].keys
+  "What is your Tier 4 sponsor number?" => [
+    'made-up',
+    'V6G1G9F62', # Post
+    'QNCPTDW26'  # Online
+  ]
 
   # "How old are you?" => [
   #   15, 17, 19, 23
