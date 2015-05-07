@@ -22,6 +22,7 @@ FileUtils.mkdir_p(HTML_DIRECTORY)
 
 def html_for(options)
   url = File.join(SMART_ANSWER_URL, options)
+  puts url
   `curl --silent #{url}`
 end
 
