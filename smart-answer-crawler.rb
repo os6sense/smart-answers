@@ -54,7 +54,7 @@ def save_html(doc, options)
   File.open(path, 'w') { |f| f.puts(doc.to_html) }
 end
 
-def crawl_multiple_choice_question(options)
+def parse_question_page(options)
   html = html_for(options)
   doc  = Nokogiri::HTML(html)
 
@@ -70,13 +70,13 @@ def crawl_multiple_choice_question(options)
     question_choices = form.search('input[type=radio]')
     if question_choices.any?
       question_choices.each do |input|
-        crawl_multiple_choice_question options + [input['value']]
+        parse_question_page options + [input['value']]
       end
     else
       responses = RESPONSES[question_text]
       unless responses.nil?
         responses.each do |response|
-          crawl_multiple_choice_question options + [response.to_s]
+          parse_question_page options + [response.to_s]
         end
       else
         puts "Unknown question type: #{question_text}"
@@ -85,4 +85,4 @@ def crawl_multiple_choice_question(options)
   end
 end
 
-crawl_multiple_choice_question(['y'])
+parse_question_page(['y'])
