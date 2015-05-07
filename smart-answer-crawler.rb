@@ -8,14 +8,14 @@ unless SMART_ANSWER = ARGV.shift
   exit 1
 end
 
-SMART_ANSWER_URL = "https://www.gov.uk/#{SMART_ANSWER}/"
-
 responses_file = "#{SMART_ANSWER}-responses.yml"
 RESPONSES = if File.exists?(responses_file)
   YAML.load(File.read(responses_file))
 else
   {}
 end
+
+SMART_ANSWER_URL = "https://www.gov.uk/#{SMART_ANSWER}/"
 
 def html_for(options)
   url = File.join(SMART_ANSWER_URL, options)
