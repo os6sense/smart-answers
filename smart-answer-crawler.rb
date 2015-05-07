@@ -3,8 +3,12 @@ require 'nokogiri'
 require 'fileutils'
 require 'yaml'
 
-SMART_ANSWER = 'apply-tier-4-visa'
-BASE_URL     = "https://www.gov.uk/#{SMART_ANSWER}/"
+unless SMART_ANSWER = ARGV.shift
+  puts "Usage: #{__FILE__} <name-of-smart-answer>"
+  exit 1
+end
+
+BASE_URL = "https://www.gov.uk/#{SMART_ANSWER}/"
 
 tier_4_visa_data = YAML.load(File.read('lib/data/apply_tier_4_visa_data.yml'))
 
