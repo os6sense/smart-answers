@@ -63,8 +63,9 @@ def parse_question_page(options)
   elsif doc.at('.question .error-message')
     save_html(doc, options + ['error'])
   else
-    question_text = doc.at('.question h2').inner_text.strip
     save_html(doc, options)
+
+    question_text = doc.at('.question h2').inner_text.strip
 
     form = doc.search("form[action^='/#{SMART_ANSWER}']")
     question_choices = form.search('input[type=radio]')
