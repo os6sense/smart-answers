@@ -2,7 +2,7 @@ require 'bundler/setup'
 require 'nokogiri'
 require 'fileutils'
 
-SMART_ANSWER = 'additional-commodity-code'
+SMART_ANSWER = 'am-i-getting-minimum-wage'
 BASE_URL     = "https://www.gov.uk/#{SMART_ANSWER}/"
 
 def html_for(options)
@@ -26,13 +26,18 @@ def crawl_multiple_choice_question(options)
   doc     = Nokogiri::HTML(html)
   save_html(doc, options)
 
-  form = doc.search("form[action^='/#{SMART_ANSWER}']")
-  question_choices = form.search('input[type=radio]').map do |input|
-    input['value']
-  end
+  unless doc.at('.outcome')
+    question_text = doc.at('.question h2').inner_text.strip
 
-  question_choices.each do |choice|
-    crawl_multiple_choice_question(options + [choice])
+    form = doc.search("form[action^='/#{SMART_ANSWER}']")
+    question_choices = form.search('input[type=radio]')
+    if question_choices.any?
+      question_choices.each do |input|
+        crawl_multiple_choice_question options + [input['value']]
+      end
+    else
+      puts "Unknown question type: #{question_text}"
+    end
   end
 end
 
