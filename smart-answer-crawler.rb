@@ -10,19 +10,21 @@ def html_for(options)
   `curl --silent #{url}`
 end
 
-def save_html(html, options)
+def save_html(doc, options)
   directory = "#{SMART_ANSWER}-html"
   FileUtils.mkdir_p(directory)
+
+  options.push('outcome') if doc.at('.outcome')
   filename  = options.join('-') + '.html'
-  path      = File.join(directory, filename)
-  File.open(path, 'w') { |f| f.puts(html) }
+
+  path = File.join(directory, filename)
+  File.open(path, 'w') { |f| f.puts(doc.to_html) }
 end
 
 options = ['y']
 html    = html_for(options)
 doc     = Nokogiri::HTML(html)
-options.push('outcome') if doc.at('.outcome')
-save_html(html, options)
+save_html(doc, options)
 
 # Question 1
 form = doc.search("form[action^='/#{SMART_ANSWER}']")
@@ -35,8 +37,7 @@ q1_values.each do |q1_value|
 
   html = html_for(options)
   doc = Nokogiri::HTML(html)
-  options.push('outcome') if doc.at('.outcome')
-  save_html(html, options)
+  save_html(doc, options)
 
   # Question 2
   form = doc.search("form[action^='/#{SMART_ANSWER}']")
@@ -49,8 +50,7 @@ q1_values.each do |q1_value|
 
     html = html_for(options)
     doc = Nokogiri::HTML(html)
-    options.push('outcome') if doc.at('.outcome')
-    save_html(html, options)
+    save_html(doc, options)
 
     # Question 3
     form = doc.search("form[action^='/#{SMART_ANSWER}']")
@@ -63,8 +63,7 @@ q1_values.each do |q1_value|
 
       html = html_for(options)
       doc = Nokogiri::HTML(html)
-      options.push('outcome') if doc.at('.outcome')
-      save_html(html, options)
+      save_html(doc, options)
 
       # Question 4
       form = doc.search("form[action^='/#{SMART_ANSWER}']")
@@ -77,8 +76,7 @@ q1_values.each do |q1_value|
 
         html = html_for(options)
         doc = Nokogiri::HTML(html)
-        options.push('outcome') if doc.at('.outcome')
-        save_html(html, options)
+        save_html(doc, options)
 
         # Question 5
         form = doc.search("form[action^='/#{SMART_ANSWER}']")
