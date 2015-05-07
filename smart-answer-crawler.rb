@@ -8,7 +8,7 @@ unless SMART_ANSWER = ARGV.shift
   exit 1
 end
 
-BASE_URL = "https://www.gov.uk/#{SMART_ANSWER}/"
+SMART_ANSWER_URL = "https://www.gov.uk/#{SMART_ANSWER}/"
 
 tier_4_visa_data = YAML.load(File.read('lib/data/apply_tier_4_visa_data.yml'))
 
@@ -55,7 +55,7 @@ RESPONSES = {
 }
 
 def html_for(options)
-  url = File.join(BASE_URL, options)
+  url = File.join(SMART_ANSWER_URL, options)
   `curl --silent #{url}`
 end
 
