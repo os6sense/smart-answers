@@ -16,7 +16,7 @@ else
 end
 
 SMART_ANSWER_URL = "https://www.gov.uk/#{SMART_ANSWER}/"
-HTML_DIRECTORY   = "#{SMART_ANSWER}-html"
+HTML_DIRECTORY   = "_smart-answer-output/#{SMART_ANSWER}"
 
 FileUtils.mkdir_p(HTML_DIRECTORY)
 
