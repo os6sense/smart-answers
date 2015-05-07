@@ -1,44 +1,49 @@
 require 'bundler/setup'
 require 'nokogiri'
 require 'fileutils'
+require 'yaml'
 
-SMART_ANSWER = 'am-i-getting-minimum-wage'
+SMART_ANSWER = 'apply-tier-4-visa'
 BASE_URL     = "https://www.gov.uk/#{SMART_ANSWER}/"
 
+tier_4_visa_data = YAML.load(File.read('lib/data/apply_tier_4_visa_data.yml'))
+
 RESPONSES = {
-  "How old are you?" => [
-    15, 17, 19, 23
-  ],
-  "How often do you get paid?" => [
-    1, 31
-  ],
-  "How many hours do you work during the pay period?" => [
-    10, 40
-  ],
-  "How much do you get paid before tax in the pay period?" => [
-    0, 1000
-  ],
-  "How old were you at the time?" => [
-    15, 17, 19, 23
-  ],
-  "How often did you get paid?" => [
-    1, 31
-  ],
-  "How many hours of overtime do you work during the pay period?" => [
-    0, 10
-  ],
-  "How many days per week do you live in the accommodation?" => [
-    0, 3, 7
-  ],
-  "How much does your employer charge for accommodation per day?" => [
-    10, 50
-  ],
-  "How much do you get paid for overtime per hour?" => [
-    5, 20
-  ],
-  "How many hours did you work during the pay period?" => [
-    10, 40
-  ]
+  "What is your Tier 4 sponsor number?" => tier_4_visa_data['post'].keys + tier_4_visa_data['online'].keys
+
+  # "How old are you?" => [
+  #   15, 17, 19, 23
+  # ],
+  # "How often do you get paid?" => [
+  #   1, 31
+  # ],
+  # "How many hours do you work during the pay period?" => [
+  #   10, 40
+  # ],
+  # "How much do you get paid before tax in the pay period?" => [
+  #   0, 1000
+  # ],
+  # "How old were you at the time?" => [
+  #   15, 17, 19, 23
+  # ],
+  # "How often did you get paid?" => [
+  #   1, 31
+  # ],
+  # "How many hours of overtime do you work during the pay period?" => [
+  #   0, 10
+  # ],
+  # "How many days per week do you live in the accommodation?" => [
+  #   0, 3, 7
+  # ],
+  # "How much does your employer charge for accommodation per day?" => [
+  #   10, 50
+  # ],
+  # "How much do you get paid for overtime per hour?" => [
+  #   5, 20
+  # ],
+  # "How many hours did you work during the pay period?" => [
+  #   10, 40
+  # ]
 }
 
 def html_for(options)
