@@ -10,49 +10,48 @@ end
 
 SMART_ANSWER_URL = "https://www.gov.uk/#{SMART_ANSWER}/"
 
-tier_4_visa_data = YAML.load(File.read('lib/data/apply_tier_4_visa_data.yml'))
+responses_file = "#{SMART_ANSWER}-responses.yml"
+RESPONSES = if File.exists?(responses_file)
+  YAML.load(File.read(responses_file))
+else
+  {}
+end
 
-RESPONSES = {
-  "What is your Tier 4 sponsor number?" => [
-    'made-up',
-    'V6G1G9F62', # Post
-    'QNCPTDW26'  # Online
-  ]
-
-  # "How old are you?" => [
-  #   15, 17, 19, 23
-  # ],
-  # "How often do you get paid?" => [
-  #   1, 31
-  # ],
-  # "How many hours do you work during the pay period?" => [
-  #   10, 40
-  # ],
-  # "How much do you get paid before tax in the pay period?" => [
-  #   0, 1000
-  # ],
-  # "How old were you at the time?" => [
-  #   15, 17, 19, 23
-  # ],
-  # "How often did you get paid?" => [
-  #   1, 31
-  # ],
-  # "How many hours of overtime do you work during the pay period?" => [
-  #   0, 10
-  # ],
-  # "How many days per week do you live in the accommodation?" => [
-  #   0, 3, 7
-  # ],
-  # "How much does your employer charge for accommodation per day?" => [
-  #   10, 50
-  # ],
-  # "How much do you get paid for overtime per hour?" => [
-  #   5, 20
-  # ],
-  # "How many hours did you work during the pay period?" => [
-  #   10, 40
-  # ]
-}
+# RESPONSES = {
+#   # "How old are you?" => [
+#   #   15, 17, 19, 23
+#   # ],
+#   # "How often do you get paid?" => [
+#   #   1, 31
+#   # ],
+#   # "How many hours do you work during the pay period?" => [
+#   #   10, 40
+#   # ],
+#   # "How much do you get paid before tax in the pay period?" => [
+#   #   0, 1000
+#   # ],
+#   # "How old were you at the time?" => [
+#   #   15, 17, 19, 23
+#   # ],
+#   # "How often did you get paid?" => [
+#   #   1, 31
+#   # ],
+#   # "How many hours of overtime do you work during the pay period?" => [
+#   #   0, 10
+#   # ],
+#   # "How many days per week do you live in the accommodation?" => [
+#   #   0, 3, 7
+#   # ],
+#   # "How much does your employer charge for accommodation per day?" => [
+#   #   10, 50
+#   # ],
+#   # "How much do you get paid for overtime per hour?" => [
+#   #   5, 20
+#   # ],
+#   # "How many hours did you work during the pay period?" => [
+#   #   10, 40
+#   # ]
+# }
 
 def html_for(options)
   url = File.join(SMART_ANSWER_URL, options)
