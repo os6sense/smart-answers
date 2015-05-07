@@ -60,30 +60,26 @@ def crawl_multiple_choice_question(options)
 
   if doc.at('.outcome')
     save_html(doc, options + ['outcome'])
+  elsif doc.at('.question .error-message')
+    save_html(doc, options + ['error'])
   else
     question_text = doc.at('.question h2').inner_text.strip
-    error_message = doc.at('.question .error-message')
+    save_html(doc, options)
 
-    if error_message
-      save_html(doc, options + ['error'])
+    form = doc.search("form[action^='/#{SMART_ANSWER}']")
+    question_choices = form.search('input[type=radio]')
+    if question_choices.any?
+      question_choices.each do |input|
+        crawl_multiple_choice_question options + [input['value']]
+      end
     else
-      save_html(doc, options)
-
-      form = doc.search("form[action^='/#{SMART_ANSWER}']")
-      question_choices = form.search('input[type=radio]')
-      if question_choices.any?
-        question_choices.each do |input|
-          crawl_multiple_choice_question options + [input['value']]
+      responses = RESPONSES[question_text]
+      unless responses.nil?
+        responses.each do |response|
+          crawl_multiple_choice_question options + [response.to_s]
         end
       else
-        responses = RESPONSES[question_text]
-        unless responses.nil?
-          responses.each do |response|
-            crawl_multiple_choice_question options + [response.to_s]
-          end
-        else
-          puts "Unknown question type: #{question_text}"
-        end
+        puts "Unknown question type: #{question_text}"
       end
     end
   end
