@@ -35,6 +35,9 @@ RESPONSES = {
   ],
   "How much do you get paid for overtime per hour?" => [
     5, 20
+  ],
+  "How many hours did you work during the pay period?" => [
+    10, 40
   ]
 }
 
