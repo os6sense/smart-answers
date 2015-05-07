@@ -16,6 +16,9 @@ else
 end
 
 SMART_ANSWER_URL = "https://www.gov.uk/#{SMART_ANSWER}/"
+HTML_DIRECTORY   = "#{SMART_ANSWER}-html"
+
+FileUtils.mkdir_p(HTML_DIRECTORY)
 
 def html_for(options)
   url = File.join(SMART_ANSWER_URL, options)
@@ -23,10 +26,8 @@ def html_for(options)
 end
 
 def save_html(doc, options)
-  directory = "#{SMART_ANSWER}-html"
-  FileUtils.mkdir_p(directory)
   filename  = options.join('-') + '.html'
-  path = File.join(directory, filename)
+  path = File.join(HTML_DIRECTORY, filename)
   File.open(path, 'w') { |f| f.puts(doc.to_html) }
 end
 
