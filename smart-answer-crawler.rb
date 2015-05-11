@@ -36,11 +36,11 @@ def parse_question_page(options)
   html = html_for(options)
   doc  = Nokogiri::HTML(html)
 
-  if doc.at('.outcome')
+  if doc.at('.smart_answer .outcome')
     save_html(doc, options + ['outcome'])
-  elsif doc.at('.question .error-message')
+  elsif doc.at('.smart_answer .question .error-message')
     save_html(doc, options + ['error'])
-  else
+  elsif doc.at('.smart_answer')
     save_html(doc, options)
 
     question_text = doc.at('.question h2').inner_text.strip
@@ -66,6 +66,10 @@ def parse_question_page(options)
         puts "Unknown question type: #{question_text}"
       end
     end
+  else
+    # We don't seem to have a smart answer, let's try this same page again
+    puts "Page doesn't appear to contain a Smart Answer. Trying again."
+    parse_question_page options
   end
 end
 
