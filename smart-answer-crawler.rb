@@ -47,8 +47,13 @@ def parse_question_page(options)
 
     form = doc.search("form[action^='/#{SMART_ANSWER}']")
     question_choices = form.search('input[type=radio]')
+    question_options = form.search('input[type=checkbox]')
     if question_choices.any?
       question_choices.each do |input|
+        parse_question_page options + [input['value']]
+      end
+    elsif question_options.any?
+      question_options.each do |input|
         parse_question_page options + [input['value']]
       end
     else
