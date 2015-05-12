@@ -454,6 +454,7 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
       end # answer yes to employer told in time
     end
   end
+
   context "average weekly earnings is less than the LEL on sick start date" do
     setup do
       add_response 'none' # Q1
@@ -461,12 +462,13 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
       add_response 'no' # Q3
       add_response '2013-06-10' # Q4
       add_response '2013-06-20' # Q5
+      add_response 'no' # Q11
       add_response 'before_payday' # Q5.1
       add_response 'weekly' # Q5.2
       add_response '100' # Q7
       add_response '7' # Q7.1
-      add_response 'no' # Q11
     end
+
     should "take you to result A5 as awe < LEL (as of 2013-06-10)" do
       assert_state_variable :employee_average_weekly_earnings, 100
       assert_current_node :not_earned_enough
@@ -481,6 +483,7 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
       add_response '2013-06-10'
       add_response '2013-06-12'
     end
+
     should "take you to result A7 - must be sick for at least 4 days in a row" do
       assert_current_node :must_be_sick_for_4_days
     end
@@ -493,16 +496,17 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
       add_response 'no'
       add_response '2013-06-10'
       add_response '2013-06-20'
+      add_response 'yes' # Q11
+      add_response '2013-01-01' # Q11.1
+      add_response '2013-07-03' # Q11.2
       add_response 'eight_weeks_more'
       add_response 'monthly'
       add_response '2013-05-31'
       add_response '2013-03-31'
       add_response '4000'
-      add_response 'yes'
-      add_response '2013-01-01'
-      add_response '183'
       add_response '1,2,3,4,5'
     end
+
     should "take you to result A8 as already claimed > 28 weeks (max amount)" do
       assert_current_node :maximum_entitlement_reached
     end
@@ -515,14 +519,14 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
       add_response :no
       add_response "2013-01-07"
       add_response "2013-05-03"
+      add_response "yes" # Q11
+      add_response "2012-11-11" # Q11.1
+      add_response "2012-11-19" # Q11.2
       add_response :eight_weeks_more
       add_response :monthly
       add_response "2012-12-28"
       add_response "2012-10-26"
       add_response 1600.0
-      add_response :yes
-      add_response "2012-11-11"
-      add_response 8
       add_response "3,6"
 
       assert_current_node :entitled_to_sick_pay
@@ -552,14 +556,14 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
       add_response :no
       add_response "2013-01-07"
       add_response "2013-05-03"
+      add_response "yes" # Q11
+      add_response "2012-11-09" # Q11.1
+      add_response "2012-12-02" # Q11.2
       add_response :eight_weeks_more
       add_response :monthly
       add_response "2012-12-28"
       add_response "2012-10-26"
       add_response 1250.75
-      add_response :yes
-      add_response "2012-11-09"
-      add_response 23
       add_response "2,3,4"
 
       assert_current_node :entitled_to_sick_pay
@@ -589,12 +593,12 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
       add_response :no
       add_response "2013-01-07"
       add_response "2013-05-03"
+      add_response "no"
       add_response :eight_weeks_more
       add_response :irregularly
       add_response "2012-12-28"
       add_response "2012-10-26"
       add_response 3000.0
-      add_response :no
       add_response "1,2,3,4"
 
       assert_current_node :entitled_to_sick_pay
@@ -625,12 +629,12 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
       add_response :no
       add_response "2013-01-07"
       add_response "2013-05-03"
+      add_response "no"
       add_response :eight_weeks_more
       add_response :irregularly
       add_response "2012-12-28"
       add_response "2012-10-26"
       add_response 3000.0
-      add_response :no
       add_response "1,2,3,4"
 
       assert_current_node :entitled_to_sick_pay
