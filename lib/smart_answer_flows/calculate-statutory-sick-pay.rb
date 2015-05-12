@@ -55,6 +55,7 @@ end
 date_question :last_sick_day? do
   from { Date.new(2011, 1, 1) }
   to { Date.today }
+
   calculate :sick_end_date do |response|
     response
   end
@@ -65,8 +66,45 @@ date_question :last_sick_day? do
     (last_day_sick - start_date).to_i + 1
   end
   validate { days_sick >= 1 }
-  next_node_if(:paid_at_least_8_weeks?) { days_sick > 3 }
+  next_node_if(:has_linked_sickness?) { days_sick > 3 }
   next_node(:must_be_sick_for_4_days)
+end
+
+# Question 11
+multiple_choice :has_linked_sickness? do
+  option yes: :linked_sickness_start_date?
+  option no: :paid_at_least_8_weeks?
+end
+
+# Question 11.1
+date_question :linked_sickness_start_date? do
+  from { Date.new(2010, 1, 1) }
+  to { Date.today }
+
+  calculate :sick_start_date do |response|
+    response
+  end
+
+  next_node(:linked_sickness_end_date?)
+end
+
+# Question 11.2
+date_question :linked_sickness_end_date? do
+  from { Date.new(2010, 1, 1) }
+  to { Date.today }
+
+  calculate :sick_end_date do |response|
+    response
+  end
+
+
+  calculate :prior_sick_days do |response|
+    start_date = sick_start_date
+    last_day_sick = response
+    (last_day_sick - start_date).to_i + 1
+  end
+
+  next_node(:paid_at_least_8_weeks?)
 end
 
 # Question 5.1
@@ -147,7 +185,7 @@ money_question :total_employee_earnings? do
       relevant_period_to: relevant_period_to, relevant_period_from: relevant_period_from)
   end
 
-  next_node :off_sick_4_days?
+  next_node :usual_work_days?
 end
 
 # Question 7
@@ -166,7 +204,7 @@ value_question :contractual_days_covered_by_earnings? do
     days_worked = response
     Calculators::StatutorySickPayCalculator.contractual_earnings_awe(pay, days_worked)
   end
-  next_node :off_sick_4_days?
+  next_node :usual_work_days?
 end
 
 # Question 8
@@ -185,34 +223,6 @@ value_question :days_covered_by_earnings? do
     Calculators::StatutorySickPayCalculator.total_earnings_awe(pay, days_worked)
   end
 
-  next_node :off_sick_4_days?
-end
-
-# Question 11
-multiple_choice :off_sick_4_days? do
-  option yes: :linked_sickness_start_date?
-  option :no
-
-  next_node_if(:not_earned_enough) do
-    employee_average_weekly_earnings < Calculators::StatutorySickPayCalculator.lower_earning_limit_on(sick_start_date)
-  end
-  next_node :usual_work_days?
-end
-
-# Question 11.1
-date_question :linked_sickness_start_date? do
-  from { Date.new(2010, 1, 1) }
-  to { Date.today }
-
-  next_node_if(:not_earned_enough) do |response|
-    employee_average_weekly_earnings < Calculators::StatutorySickPayCalculator.lower_earning_limit_on(response)
-  end
-  next_node(:how_many_days_sick?)
-end
-
-# Q12
-value_question :how_many_days_sick? do
-  save_input_as :prior_sick_days
   next_node :usual_work_days?
 end
 
@@ -236,6 +246,10 @@ checkbox_question :usual_work_days? do
 
   next_node_calculation(:calculator) do |response|
     Calculators::StatutorySickPayCalculator.new(prior_sick_days.to_i, sick_start_date, sick_end_date, response.split(","))
+  end
+
+  next_node_if(:not_earned_enough) do |response|
+    employee_average_weekly_earnings < Calculators::StatutorySickPayCalculator.lower_earning_limit_on(sick_start_date)
   end
 
   # Answer 8
