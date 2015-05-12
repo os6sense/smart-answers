@@ -66,7 +66,7 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
 
           context "answer 2 March 2014" do
             setup do
-              add_response Date.parse('2 March 2014')
+              add_response '2014-03-02'
             end
             should "ask when the last sick day was" do
               assert_current_node :last_sick_day?
@@ -74,7 +74,7 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
 
             context "answer 2 June 2014" do
               setup do
-                add_response Date.parse('2 June 2014')
+                add_response '2014-06-02'
               end
               should "ask if employer paid 8 weeks of earnings" do
                 assert_current_node :paid_at_least_8_weeks?
@@ -167,18 +167,18 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
 
           context "answering first sick day" do
             setup do
-              add_response '02/04/2013'
+              add_response '2013-04-02'
             end
 
             should "store response and move to Q5" do
-              assert_state_variable :sick_start_date, Date.parse(' 2 April 2013')
+              assert_state_variable :sick_start_date, Date.parse('2 April 2013')
               assert_current_node :last_sick_day? # Q5
             end
 
             context "answering last sick day" do
               context "last sick day is less than 3 days after first" do
                 setup do
-                  add_response '04/04/2013'
+                  add_response '2013-04-04'
                 end
                 should "take you to result A2" do
                   assert_current_node :must_be_sick_for_4_days # A2
@@ -187,7 +187,7 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
 
               context "last sick day is 3 days or more after first" do
                 setup do
-                  add_response '10/04/2013'
+                  add_response '2013-04-10'
                 end
                 should "store last sick day" do
                   assert_state_variable :sick_end_date, Date.parse('10 April 2013')
@@ -216,7 +216,7 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
                     end
                     context "enter last payday before start of sickness" do
                       setup do
-                        add_response '31/03/2013'
+                        add_response '2013-03-31'
                       end
                       should "ask for last normal payday before payday offset" do # Q6.1
                         assert_current_node :last_payday_before_offset?
@@ -224,7 +224,7 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
                       end
                       context "enter last payday before offset" do
                         setup do
-                          add_response '31/01/2013'
+                          add_response '2013-01-31'
                         end
                         should "ask for total amount paid" do # Q 6.2
                           assert_current_node :total_employee_earnings?
@@ -246,7 +246,7 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
                             end
                             context "enter previous sickness start date" do
                               setup do
-                                add_response ' 1/01/2013'
+                                add_response ' 2013-01-1'
                               end
                               should "ask how many days sick the employee had in this previous period" do # Q12
                                 assert_current_node :how_many_days_sick?
@@ -331,7 +331,7 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
                           end
                           context "enter previous sickness start date" do
                             setup do
-                              add_response '12/03/2013'
+                              add_response '2013-03-12'
                             end
                             should "ask how many previous sick days were taken" do # Q12
                               assert_current_node :how_many_days_sick?
@@ -405,7 +405,7 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
                         end
                         context "enter previous sickness start date" do
                           setup do
-                            add_response '24/03/2013'
+                            add_response '2013-03-24'
                           end
                           should "ask how many previous sick days were taken" do # Q12
                             assert_current_node :how_many_days_sick?
@@ -459,15 +459,15 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
       add_response 'none' # Q1
       add_response 'yes' # Q2
       add_response 'no' # Q3
-      add_response '10/06/2013' # Q4
-      add_response '20/06/2013' # Q5
+      add_response '2013-06-10' # Q4
+      add_response '2013-06-20' # Q5
       add_response 'before_payday' # Q5.1
       add_response 'weekly' # Q5.2
       add_response '100' # Q7
       add_response '7' # Q7.1
       add_response 'no' # Q11
     end
-    should "take you to result A5 as awe < LEL (as of 10/06/2013)" do
+    should "take you to result A5 as awe < LEL (as of 2013-06-10)" do
       assert_state_variable :employee_average_weekly_earnings, 100
       assert_current_node :not_earned_enough
     end
@@ -478,8 +478,8 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
       add_response 'none'
       add_response 'yes'
       add_response 'no'
-      add_response '10/06/2013'
-      add_response '12/06/2013'
+      add_response '2013-06-10'
+      add_response '2013-06-12'
     end
     should "take you to result A7 - must be sick for at least 4 days in a row" do
       assert_current_node :must_be_sick_for_4_days
@@ -491,15 +491,15 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
       add_response 'none'
       add_response 'yes'
       add_response 'no'
-      add_response '10/06/2013'
-      add_response '20/06/2013'
+      add_response '2013-06-10'
+      add_response '2013-06-20'
       add_response 'eight_weeks_more'
       add_response 'monthly'
-      add_response '31/05/2013'
-      add_response '31/03/2013'
+      add_response '2013-05-31'
+      add_response '2013-03-31'
       add_response '4000'
       add_response 'yes'
-      add_response '01/01/2013'
+      add_response '2013-01-01'
       add_response '183'
       add_response '1,2,3,4,5'
     end
@@ -513,15 +513,15 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
       add_response :ordinary_statutory_paternity_pay
       add_response :yes
       add_response :no
-      add_response Date.parse("2013-01-07")
-      add_response Date.parse("2013-05-03")
+      add_response "2013-01-07"
+      add_response "2013-05-03"
       add_response :eight_weeks_more
       add_response :monthly
-      add_response Date.parse("2012-12-28")
-      add_response Date.parse("2012-10-26")
+      add_response "2012-12-28"
+      add_response "2012-10-26"
       add_response 1600.0
       add_response :yes
-      add_response Date.parse("2012-11-11")
+      add_response "2012-11-11"
       add_response 8
       add_response "3,6"
 
@@ -550,15 +550,15 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
       add_response :ordinary_statutory_paternity_pay
       add_response :yes
       add_response :no
-      add_response Date.parse("2013-01-07")
-      add_response Date.parse("2013-05-03")
+      add_response "2013-01-07"
+      add_response "2013-05-03"
       add_response :eight_weeks_more
       add_response :monthly
-      add_response Date.parse("2012-12-28")
-      add_response Date.parse("2012-10-26")
+      add_response "2012-12-28"
+      add_response "2012-10-26"
       add_response 1250.75
       add_response :yes
-      add_response Date.parse("2012-11-09")
+      add_response "2012-11-09"
       add_response 23
       add_response "2,3,4"
 
@@ -587,12 +587,12 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
       add_response :ordinary_statutory_paternity_pay
       add_response :yes
       add_response :no
-      add_response Date.parse("2013-01-07")
-      add_response Date.parse("2013-05-03")
+      add_response "2013-01-07"
+      add_response "2013-05-03"
       add_response :eight_weeks_more
       add_response :irregularly
-      add_response Date.parse("2012-12-28")
-      add_response Date.parse("2012-10-26")
+      add_response "2012-12-28"
+      add_response "2012-10-26"
       add_response 3000.0
       add_response :no
       add_response "1,2,3,4"
@@ -623,12 +623,12 @@ class CalculateStatutorySickPayTest < ActiveSupport::TestCase
       add_response :additional_statutory_paternity_pay
       add_response :yes
       add_response :no
-      add_response Date.parse("2013-01-07")
-      add_response Date.parse("2013-05-03")
+      add_response "2013-01-07"
+      add_response "2013-05-03"
       add_response :eight_weeks_more
       add_response :irregularly
-      add_response Date.parse("2012-12-28")
-      add_response Date.parse("2012-10-26")
+      add_response "2012-12-28"
+      add_response "2012-10-26"
       add_response 3000.0
       add_response :no
       add_response "1,2,3,4"
